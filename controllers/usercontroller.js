@@ -120,10 +120,10 @@ router.post('/signup', function(req, res) {
 });
 
 router.post('/login', function(req, res) {
-    User.findOne( { where: { email: req.body.user.email } } ).then(
+    User.findOne( { where: { email: req.body.email } } ).then(
         function(user) {
             if (user) {
-                bcrypt.compare(req.body.user.password, user.passwordhash, function(err, matches){
+                bcrypt.compare(req.body.password, user.password, function(err, matches){
                     if (matches) {
                         let token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: 60*60*24});
                         res.json({
