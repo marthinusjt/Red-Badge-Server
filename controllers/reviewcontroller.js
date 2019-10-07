@@ -6,7 +6,7 @@ let ReviewModel = sequelize.import('../models/review');
 const validateSession = require('../middleware/validate-session');
 // GET ALL REVIEWS BY GAMEID
 
-router.get('/all/:id',validateSession, (req, res) => {
+router.get('/all/:id', (req, res) => {
     ReviewModel.findAll(
 
         {where:
@@ -33,7 +33,7 @@ router.post('/',validateSession, (req, res) => {
         headline: req.body.headline,
         pros: req.body.pros,
         cons: req.body.cons,
-        body: req.body.body,
+        textArea: req.body.textArea,
 
 })
 .then(review => res.status(200).json(review))
