@@ -1,19 +1,19 @@
+
 let router = require('express').Router();
 let sequelize = require('../db');
-let User = sequelize.import('../models/user');
-let ReviewModel = sequelize.import('../models/review');
+let Forum = sequelize.import('../models/forum');
 const validateSession = require('../middleware/validate-session');
-// GET ALL REVIEWS BY GAMEID
+// GET ALL forumS BY GAMEID
 
-router.get('/all/:id',validateSession, (req, res) => {
-    ReviewModel.findAll(
+router.get('/all/:id', (req, res) => {
+    Forum.findAll(
 
         {where:
             {gameId: req.params.id, }
         }
             
         )
-        .then(review => res.status(200).json(review))
+        .then(forum => res.status(200).json(forum))
         .catch(err => res.status(500).json({
             error: err
         }))
@@ -21,30 +21,32 @@ router.get('/all/:id',validateSession, (req, res) => {
  })
 
 
-router.post('/',validateSession, (req, res) => {
-    ReviewModel.create({
+router.post('/:gameid',validateSession, (req, res) => {
+    Forum.create({
 
+        pinned: false,
         ownerId: req.user.id,
-        gameId: req.body.gameId,
+        gameId: req.params.gameid,
         userName: req.body.userName,
-        score: req.body.score,
-        headline: req.body.headline,
-        pros: req.body.pros,
-        cons: req.body.cons,
-        body: req.body.body,
+        category: req.body.category,
+        textArea: req.body.textArea,
+
+        topic: req.body.topic,
+        topicId: req.body.topicId,
+   
 
 })
-.then(review => res.status(200).json(review))
+.then(forum => res.status(200).json(forum))
 .catch(err => res.status(500).json({
     error: err
 }))
 });
 
-// GET A REVIEW BY REVIEWID
+// GET A forum BY forumID
 router.get('/:gameid', validateSession, function(req, res) {
    let gameid = req.params.gameid;
    let userid = req.user.id;
-   ReviewModel
+   Forum
        .findOne({
            where: { gameId: gameid, ownerId: userid }
        }).then(
@@ -56,13 +58,13 @@ router.get('/:gameid', validateSession, function(req, res) {
            }
        );
 });
-// DELETE A REVIEW
+// DELETE A forum
 router.delete('/:gameid', validateSession, function(req, res) {
    let gameid = req.params.gameid;
    let userid = req.user.id;
-   ReviewModel
+   Forum
        .destroy({
-           where: { gameid: gameid, ownerid: userid }
+           where: { gameId: gameid, ownerId: userid }
        }).then(
            function deleteLogSuccess(data){
                res.send("you removed a log");
@@ -72,31 +74,17 @@ router.delete('/:gameid', validateSession, function(req, res) {
            }
        );
 });
-// UPDATE A REVIEW
-router.put('/', validateSession, function(req, res) {
+// UPDATE A forum
+router.put('/:gameid', validateSession, function(req, res) {
    let userid = req.user.id;
-   let review = req.body.review;
-   let gameid = req.body.review.gameid;
-   let score = req.body.review.score;
-   let title = req.body.review.title;
-   let body = req.body.review.body;
-   ReviewModel
-       .update({
-           review: review,
-           score: score,
-           title: title,
-           body: body
-       },
-           {where: {gameid: gameid, ownerid: userid}}
-       ).then(
-           function updateSuccess(updatedReview) {
-               res.json({
-                   review: review
-               });
-           },
-           function updateError(err){
-               res.send(500, err.message);
-           }
+   let gameid = req.params.gameid;
+   Forum
+       .update(req.body,
+           {where: {gameId: gameid, ownerId: userid}}
        )
+       .then(spieces => res.status(200).json(spieces))
+       .catch(err => res.status(500).json({
+           error: err
+       }))
 });
 module.exports = router;

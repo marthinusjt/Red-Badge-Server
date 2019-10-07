@@ -1,7 +1,7 @@
 
 let router = require('express').Router();
 let sequelize = require('../db');
-let User = sequelize.import('../models/user');
+
 let ReviewModel = sequelize.import('../models/review');
 const validateSession = require('../middleware/validate-session');
 // GET ALL REVIEWS BY GAMEID
