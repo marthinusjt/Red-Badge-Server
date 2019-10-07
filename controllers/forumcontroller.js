@@ -1,4 +1,3 @@
-
 let router = require('express').Router();
 let sequelize = require('../db');
 let User = sequelize.import('../models/user');
@@ -6,7 +5,7 @@ let ReviewModel = sequelize.import('../models/review');
 const validateSession = require('../middleware/validate-session');
 // GET ALL REVIEWS BY GAMEID
 
-router.get('/all/:id', (req, res) => {
+router.get('/all/:id',validateSession, (req, res) => {
     ReviewModel.findAll(
 
         {where:
@@ -25,7 +24,6 @@ router.get('/all/:id', (req, res) => {
 router.post('/',validateSession, (req, res) => {
     ReviewModel.create({
 
-
         ownerId: req.user.id,
         gameId: req.body.gameId,
         userName: req.body.userName,
@@ -33,7 +31,7 @@ router.post('/',validateSession, (req, res) => {
         headline: req.body.headline,
         pros: req.body.pros,
         cons: req.body.cons,
-        textArea: req.body.textArea,
+        body: req.body.body,
 
 })
 .then(review => res.status(200).json(review))
@@ -64,7 +62,7 @@ router.delete('/:gameid', validateSession, function(req, res) {
    let userid = req.user.id;
    ReviewModel
        .destroy({
-           where: { gameId: gameid, ownerId: userid }
+           where: { gameid: gameid, ownerid: userid }
        }).then(
            function deleteLogSuccess(data){
                res.send("you removed a log");
@@ -75,16 +73,30 @@ router.delete('/:gameid', validateSession, function(req, res) {
        );
 });
 // UPDATE A REVIEW
-router.put('/:gameid', validateSession, function(req, res) {
+router.put('/', validateSession, function(req, res) {
    let userid = req.user.id;
-   let gameid = req.params.gameid;
+   let review = req.body.review;
+   let gameid = req.body.review.gameid;
+   let score = req.body.review.score;
+   let title = req.body.review.title;
+   let body = req.body.review.body;
    ReviewModel
-       .update(req.body,
-           {where: {gameId: gameid, ownerId: userid}}
+       .update({
+           review: review,
+           score: score,
+           title: title,
+           body: body
+       },
+           {where: {gameid: gameid, ownerid: userid}}
+       ).then(
+           function updateSuccess(updatedReview) {
+               res.json({
+                   review: review
+               });
+           },
+           function updateError(err){
+               res.send(500, err.message);
+           }
        )
-       .then(spieces => res.status(200).json(spieces))
-       .catch(err => res.status(500).json({
-           error: err
-       }))
 });
 module.exports = router;
