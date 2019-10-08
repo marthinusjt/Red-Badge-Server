@@ -1,5 +1,5 @@
 module.exports= (sequelize, DataTypes) => {
-    const Forum = sequelize.define('user', {
+    const Forum = sequelize.define('forum', {
         pinned:{
             type: DataTypes.BOOLEAN,
             allowNull: false
@@ -23,11 +23,11 @@ module.exports= (sequelize, DataTypes) => {
             allowNull: false,
             values:[
                 'Announcements',
-               ' General Discussions'
+               'General Discussions'
 
             ]
         },
-        body:{
+        textArea:{
             type: DataTypes.STRING,
             allowNull: true
         },
@@ -38,11 +38,6 @@ module.exports= (sequelize, DataTypes) => {
         topicId:{
             type: DataTypes.INTEGER,
             allowNull: false
-        },
-
-        body: {
-            type: DataTypes.STRING,
-            allowNull: false,
         },
     })
     return Forum;

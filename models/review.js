@@ -30,7 +30,7 @@ module.exports= (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true
         },
-        body:{
+        textArea:{
             type: DataTypes.STRING,
             allowNull: true
         }
