@@ -67,7 +67,7 @@ router.delete('/:gameid', validateSession, function(req, res) {
            where: { gameId: gameid, ownerId: userid }
        }).then(
            function deleteLogSuccess(data){
-               res.send("you removed a log");
+               res.send(["you removed a log"]);
            },
            function deleteLogError(err){
                res.send(500, err.message);
