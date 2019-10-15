@@ -16,6 +16,7 @@ router.post('/signup', function(req, res) {
         userName: req.body.userName,
         email: email,
         admin: false,
+        banned: false,
         password: bcrypt.hashSync(pass, 10)
     }).then(
         function createSuccess(user){
@@ -58,5 +59,25 @@ router.post('/login', function(req, res) {
         }
     );
 });
+
+router.put('/admin/delete', function(req, res) {
+    User.update(req.body,
+        {where: {id: req.body.id}}
+    )
+    .then(spieces => res.status(200).json(spieces))
+    .catch(err => res.status(500).json({
+        error: err
+    }))
+});
+
+router.get('/admin/all/', (req, res) => {
+    User.findAll(  
+        )
+        .then(forum => res.status(200).json(forum))
+        .catch(err => res.status(500).json({
+            error: err
+        }))
+        
+ })
 
 module.exports = router;
