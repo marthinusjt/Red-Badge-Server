@@ -7,6 +7,7 @@ const app = express();
 const review = require('./controllers/reviewcontroller');
 const user = require('./controllers/usercontroller');
 const forum = require('./controllers/forumcontroller');
+const admin = require('./controllers/admincontroller');
 
 const sequelize = require('./db');
 
@@ -16,9 +17,13 @@ app.use(require('./middleware/headers'));
 
 
 app.use('/auth', user);
-app.use('/review', review);
-app.use('/forum', forum);
 
 app.use(require('./middleware/validate-session'))
+
+
+app.use('/review', review);
+app.use('/forum', forum);
+app.use('/admin', admin);
+
 
 app.listen(process.env.PORT, () => console.log(`app is listening port ${process.env.PORT}`))
