@@ -1,19 +1,19 @@
 
 let router = require('express').Router();
 let sequelize = require('../db');
-let Forum = sequelize.import('../models/forum');
+let ForumTopic = sequelize.import('../models/forumTopic');
 const validateSession = require('../middleware/validate-session');
-// GET ALL forumS BY GAMEID
+// GET ALL forumTopicS BY GAMEID
 
-router.get('/all/:id', (req, res) => {
-    Forum.findAll(
+router.get('/all/:id/:category', (req, res) => {
+    ForumTopic.findAll(
 
         {where:
-            {gameId: req.params.id, }
+            {gameId: req.params.id, category: req.params.category}
         }
             
         )
-        .then(forum => res.status(200).json(forum))
+        .then(forumTopic => res.status(200).json(forumTopic))
         .catch(err => res.status(500).json({
             error: err
         }))
@@ -21,34 +21,35 @@ router.get('/all/:id', (req, res) => {
  })
 
 
-router.post('/:gameid',validateSession, (req, res) => {
-    Forum.create({
+router.post('/:gameid/:category', validateSession, (req, res) => {
+    ForumTopic.create({
 
         pinned: false,
         ownerId: req.user.id,
         gameId: req.params.gameid,
-        userName: req.body.userName,
-        category: req.body.category,
+        userName: req.user.userName,
+        category: req.params.category,
         textArea: req.body.textArea,
 
         topic: req.body.topic,
-        topicId: req.body.topicId,
+        // topicId: req.body.topicId, //moved to forumReply
    
 
 })
-.then(forum => res.status(200).json(forum))
+.then(forumTopic => res.status(200).json(forumTopic))
 .catch(err => res.status(500).json({
     error: err
 }))
 });
 
-// GET A forum BY forumID
-router.get('/:gameid', validateSession, function(req, res) {
+// GET A forumTopic BY forumTopicCategory
+router.get('/:gameid/:category', validateSession, function(req, res) {
    let gameid = req.params.gameid;
+   let category = req.params.category;
    let userid = req.user.id;
-   Forum
+   ForumTopic
        .findOne({
-           where: { gameId: gameid, ownerId: userid }
+           where: { gameId: gameid, ownerId: userid, category: category }
        }).then(
            function findOneSuccess(data) {
                res.json(data);
@@ -58,13 +59,14 @@ router.get('/:gameid', validateSession, function(req, res) {
            }
        );
 });
-// DELETE A forum
-router.delete('/:gameid', validateSession, function(req, res) {
+// DELETE A forumTopic
+router.delete('/:gameid/:category', validateSession, function(req, res) {
    let gameid = req.params.gameid;
+   let category = req.params.category;
    let userid = req.user.id;
-   Forum
+   ForumTopic
        .destroy({
-           where: { gameId: gameid, ownerId: userid }
+           where: { gameId: gameid, ownerId: userid, category: category }
        }).then(
            function deleteLogSuccess(data){
                res.send("you removed a log");
@@ -74,13 +76,14 @@ router.delete('/:gameid', validateSession, function(req, res) {
            }
        );
 });
-// UPDATE A forum
-router.put('/:gameid', validateSession, function(req, res) {
+// UPDATE A forumTopic
+router.put('/:gameid/:category', validateSession, function(req, res) {
    let userid = req.user.id;
    let gameid = req.params.gameid;
-   Forum
+   let category = req.params.category;
+   ForumTopic
        .update(req.body,
-           {where: {gameId: gameid, ownerId: userid}}
+           {where: { gameId: gameid, ownerId: userid, category: category }}
        )
        .then(spieces => res.status(200).json(spieces))
        .catch(err => res.status(500).json({
