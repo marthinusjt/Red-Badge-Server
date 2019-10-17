@@ -76,14 +76,24 @@ router.delete('/:gameid/:category/:topicId', validateSession, function(req, res)
        );
 });
 // UPDATE A forumReply
-router.put('/:gameid/:category/:topicId', validateSession, function(req, res) {
+router.put('/:gameid/:category/:topicId/:id', validateSession, function(req, res) {
    let userid = req.user.id;
    let gameid = req.params.gameid;
    let category = req.params.category;
-   let topicid = req.params.id;
+   let topicid = req.params.topicId;
+
+   const replyUpdate = {
+       textArea: req.body.textArea
+   }
    ForumReply
-       .update(req.body,
-           {where: { gameId: gameid, ownerId: userid, category: category, topicId: topicid }}
+        .update(replyUpdate,
+            {where: { 
+               gameId: gameid, 
+               ownerId: userid, 
+               category: category, 
+               topicId: topicid,
+               id: req.params.id
+            }}
        )
        .then(spieces => res.status(200).json(spieces))
        .catch(err => res.status(500).json({
