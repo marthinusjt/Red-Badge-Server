@@ -43,22 +43,24 @@ router.post('/:gameid/:category', validateSession, (req, res) => {
 });
 
 // GET A forumTopic BY forumTopicCategory
-router.get('/:gameid/:category', validateSession, function(req, res) {
-   let gameid = req.params.gameid;
-   let category = req.params.category;
-   let userid = req.user.id;
-   ForumTopic
-       .findOne({
-           where: { gameId: gameid, ownerId: userid, category: category }
-       }).then(
-           function findOneSuccess(data) {
-               res.json(data);
-           },
-           function findOneError(err) {
-               res.send(500, err.message);
-           }
-       );
-});
+// router.get('/:gameid/:category', function(req, res) {
+//    let gameid = req.params.gameid;
+//    let category = req.params.category;
+//    let userid = req.user.id;
+//    let topicId = req.forumTopic.id
+//    ForumTopic
+//        .findOne({
+//            where: { gameId: gameid, ownerId: userid, category: category, topicId: topicId }
+//        }).then(
+//            function findOneSuccess(data) {
+//                res.json(data);
+//            },
+//            function findOneError(err) {
+//                res.send(500, err.message);
+//            }
+//        );
+// });
+
 // DELETE A forumTopic
 router.delete('/:gameid/:category/:id', validateSession, function(req, res) {
    let gameid = req.params.gameid;
@@ -78,6 +80,29 @@ router.delete('/:gameid/:category/:id', validateSession, function(req, res) {
        );
 });
 // UPDATE A forumTopic
+
+
+router.put('/:gameid/:category/:id', validateSession, function(req, res) {
+    let userid = req.user.id;
+    let gameid = req.params.gameid;
+    let category = req.params.category;
+ 
+    
+    ForumTopic
+         .update(req.body,
+             {where: { 
+                gameId: gameid, 
+                ownerId: userid, 
+                category: category,
+                id: req.params.id
+             }}
+        )
+        .then(spieces => res.status(200).json(spieces))
+        .catch(err => res.status(500).json({
+            error: err
+        }))
+    });
+
 router.put('/:id', validateSession, function(req, res) {
 //    let userid = req.user.id;
 //    let gameid = req.params.gameid;
@@ -108,4 +133,5 @@ router.get('/:ownerId', validateSession, function(req, res) {
             }
         );
  });
+ 
 module.exports = router;
