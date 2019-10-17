@@ -6,11 +6,11 @@ module.exports= (sequelize, DataTypes) => {
         },
         ownerId:{
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: true
         },
         gameId:{
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: true
         },
 
         userName: {
@@ -20,8 +20,9 @@ module.exports= (sequelize, DataTypes) => {
 
         category:{
             type: DataTypes.ENUM,
-            allowNull: false,
+            allowNull: true,
             values:[
+                'null',
                 'Announcements',
                 'GeneralDiscussion'
 

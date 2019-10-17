@@ -62,13 +62,14 @@ router.post('/:gameid/:category', validateSession, (req, res) => {
 // });
 
 // DELETE A forumTopic
-router.delete('/:gameid/:category', validateSession, function(req, res) {
+router.delete('/:gameid/:category/:id', validateSession, function(req, res) {
    let gameid = req.params.gameid;
    let category = req.params.category;
    let userid = req.user.id;
+   let id = req.params.id
    ForumTopic
        .destroy({
-           where: { gameId: gameid, ownerId: userid, category: category }
+           where: { gameId: gameid, ownerId: userid, category: category, id:id }
        }).then(
            function deleteLogSuccess(data){
                res.send("you removed a log");
@@ -100,5 +101,37 @@ router.put('/:gameid/:category/:id', validateSession, function(req, res) {
         .catch(err => res.status(500).json({
             error: err
         }))
+    });
+
+router.put('/:id', validateSession, function(req, res) {
+//    let userid = req.user.id;
+//    let gameid = req.params.gameid;
+//    let category = req.params.category;
+   let id = req.params.id
+   ForumTopic
+       .update(req.body,
+           {where: { /* gameId: gameid, ownerId: userid, category: category,*/ id:id  }}
+       )
+       .then(spieces => res.status(200).json(spieces))
+       .catch(err => res.status(500).json({
+           error: err
+       }))
+});
+
+router.get('/:ownerId', validateSession, function(req, res) {
+    let ownerId = req.params.ownerId;
+
+    ForumTopic
+        .findAll({
+            where: { ownerId: ownerId }
+        }).then(
+            function findOneSuccess(data) {
+                res.json(data);
+            },
+            function findOneError(err) {
+                res.send(500, err.message);
+            }
+        );
  });
+ 
 module.exports = router;

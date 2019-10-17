@@ -59,6 +59,22 @@ router.get('/admin/all/', validateSession, (req, res) => {
         
  })
 
+ router.delete('/admin/:id', validateSession, function(req, res) {
+    let id = req.params.id;
+
+    User
+        .destroy({
+            where: {id: id }
+        }).then(
+            function deleteLogSuccess(data){
+                res.send(["you removed a log"]);
+            },
+            function deleteLogError(err){
+                res.send(500, err.message);
+            }
+        );
+ });
+
 
 
 
