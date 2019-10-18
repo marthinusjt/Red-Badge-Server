@@ -87,4 +87,34 @@ router.put('/:gameid', validateSession, function(req, res) {
            error: err
        }))
 });
+
+router.get('/admin/:id', (req, res) => {
+    ReviewModel.findAll(
+
+        {where:
+            {ownerId: req.params.id, }
+        }
+            
+        )
+        .then(review => res.status(200).json(review))
+        .catch(err => res.status(500).json({
+            error: err
+        }))
+        
+ })
+
+ router.delete('/admin/:id', validateSession, function(req, res) {
+
+    ReviewModel
+        .destroy({
+            where: { id: req.params.id }
+        }).then(
+            function deleteLogSuccess(data){
+                res.send(["you removed a log"]);
+            },
+            function deleteLogError(err){
+                res.send(500, err.message);
+            }
+        );
+ });
 module.exports = router;
