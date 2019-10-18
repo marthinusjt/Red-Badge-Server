@@ -16,6 +16,7 @@ router.post('/signup', function(req, res) {
         userName: req.body.userName,
         email: email,
         admin: false,
+        banned: false,
         password: bcrypt.hashSync(pass, 10)
     }).then(
         function createSuccess(user){
@@ -58,5 +59,54 @@ router.post('/login', function(req, res) {
         }
     );
 });
+
+router.post('/login2', function(req, res) {
+    User.findOne( { where: { email: req.body.email } } ).then(
+        function(user) {
+            if (user) {
+                bcrypt.compare(req.body.password, bcrypt.hashSync(user.password, 10), function(err, matches){
+                    if (matches) {
+                        let token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: 60*60*24});
+                        res.json({
+                            user: user,
+                            message: "Login authenticated successfully.",
+                            sessionToken: token
+                        });
+                    }else {
+                        res.status(502).send({ error: "502 error" });
+                    }
+                });
+            } else {
+                res.status(500).send({ error: "Login failed to authenticate." });
+            }
+        },
+        function(err) {
+            res.status(501).send({ error: "501 error" });
+        }
+    );
+});
+
+// router.put('/admin/delete', function(req, res) {
+//     User.update(req.body,
+//         {where: {id: req.body.id}}
+//     )
+//     .then(spieces => res.status(200).json(spieces))
+//     .catch(err => res.status(500).json({
+//         error: err
+//     }))
+// });
+
+// router.get('/admin/all/', (req, res) => {
+//     User.findAll(  
+//         )
+//         .then(forum => res.status(200).json(forum))
+//         .catch(err => res.status(500).json({
+//             error: err
+//         }))
+        
+//  })
+
+
+
 
 module.exports = router;

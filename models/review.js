@@ -23,15 +23,15 @@ module.exports= (sequelize, DataTypes) => {
             allowNull: false
         },
         pros:{
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: true
         },
         cons:{
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: true
         },
         textArea:{
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: true
         }
     })

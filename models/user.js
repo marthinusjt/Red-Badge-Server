@@ -27,6 +27,11 @@ module.exports= (sequelize, DataTypes) => {
         admin:{
             type: DataTypes.BOOLEAN,
             allowNull: true
+        },
+        banned: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false
+
         }
     })
     return User;
