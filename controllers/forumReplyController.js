@@ -25,18 +25,17 @@ router.post('/:gameid/:category/:topicId', validateSession, (req, res) => {
     ForumReply.create({
 
         ownerId: req.user.id,
-        gameId: req.params.gameid,
         userName: req.user.userName,
+        gameId: req.params.gameid,
         category: req.params.category,
-        textArea: req.body.textArea,
         topicId: req.params.topicId,
+        textArea: req.body.textArea,
    
-
-})
-.then(forumReply => res.status(200).json(forumReply))
-.catch(err => res.status(500).json({
-    error: err
-}))
+    })
+    .then(forumReply => res.status(200).json(forumReply))
+    .catch(err => res.status(500).json({
+        error: err
+    }))
 });
 
 // GET A forumReply BY forumReplyID
@@ -58,41 +57,45 @@ router.get('/:gameid/:category/:topicId', validateSession, function(req, res) {
        );
 });
 // DELETE A forumReply
-router.delete('/:gameid/:category/:topicId', validateSession, function(req, res) {
+router.delete('/:gameid/:category/:topicId/:id', validateSession, function(req, res) {
     let userid = req.user.id;
-    let gameid = req.params.gameid;
-    let category = req.params.category
-    let topicid = req.params.id;
+    let id = req.params.id;
+
     ForumReply
-       .destroy({
-           where: { gameId: gameid, ownerId: userid, category: category, topicId: topicid }
-       }).then(
-           function deleteLogSuccess(data){
-               res.send("you removed a log");
-           },
-           function deleteLogError(err){
-               res.send(500, err.message);
-           }
-       );
+        .destroy({
+            where: { 
+                ownerId: userid,
+                id: id    
+            }
+        }).then(
+            function deleteLogSuccess(data){
+                res.send(["you removed a log"]);
+            },
+            function deleteLogError(err){
+                res.send(500, err.message);
+            }
+        );
 });
+
 // UPDATE A forumReply
 router.put('/:gameid/:category/:topicId/:id', validateSession, function(req, res) {
    let userid = req.user.id;
    let gameid = req.params.gameid;
    let category = req.params.category;
    let topicid = req.params.topicId;
+   let id = req.params.id;
 
-   const replyUpdate = {
-       textArea: req.body.textArea
-   }
+//    const replyUpdate = {
+//        textArea: req.body.textArea
+//    }
    ForumReply
-        .update(replyUpdate,
+        .update(req.body,
             {where: { 
                gameId: gameid, 
                ownerId: userid, 
                category: category, 
                topicId: topicid,
-               id: req.params.id
+               id: id
             }}
        )
        .then(spieces => res.status(200).json(spieces))

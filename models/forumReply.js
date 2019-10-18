@@ -19,8 +19,9 @@ module.exports= (sequelize, DataTypes) => {
             allowNull: false,
             values:[
                 'Announcements',
-                'GeneralDiscussion'
-
+                'GeneralDiscussion',
+                'Walkthroughs',
+                'Bugs&Glitches',
             ]
         },
         textArea:{
