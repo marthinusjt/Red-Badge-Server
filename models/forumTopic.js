@@ -22,10 +22,10 @@ module.exports= (sequelize, DataTypes) => {
             type: DataTypes.ENUM,
             allowNull: true,
             values:[
-                'null',
                 'Announcements',
-                'GeneralDiscussion'
-
+                'General Discussion',
+                'Walkthroughs',
+                'Bugs & Glitches',
             ]
         },
         textArea:{
