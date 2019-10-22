@@ -20,7 +20,7 @@ app.use(require('./middleware/headers'));
 
 // UNPROTECTED ROUTES
 app.use('/auth', user);
-app.use('/review', review);t
+app.use('/review', review);
 app.use('/forumTopic', forumTopic);
 app.use('/forumReply', forumReply);
 
